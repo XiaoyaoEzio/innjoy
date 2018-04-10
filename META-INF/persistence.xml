@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <persistence-unit name="persistenceUnit">
+        <mapping-file>me/innjoy/pms/pojo/entity/HotelEntity.xml</mapping-file>
+        <mapping-file>me/innjoy/pms/pojo/entity/LockEntity.xml</mapping-file>
+        <mapping-file>me/innjoy/pms/pojo/entity/RoomEntity.xml</mapping-file>
+        <class>me.innjoy.pms.pojo.entity.HotelEntity</class>
+        <class>me.innjoy.pms.pojo.entity.LockEntity</class>
+        <class>me.innjoy.pms.pojo.entity.RoomEntity</class>
+        <properties>
+            <property name="toplink.jdbc.url" value="jdbc:mysql://39.106.137.226:3306/innjoy"/>
+            <property name="toplink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://39.106.137.226:3306/innjoy"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+            <property name="openjpa.ConnectionURL" value="jdbc:mysql://39.106.137.226:3306/innjoy"/>
+            <property name="openjpa.ConnectionDriverName" value="com.mysql.jdbc.Driver"/>
+            <property name="eclipselink.jdbc.url" value="jdbc:mysql://39.106.137.226:3306/innjoy"/>
+            <property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+        </properties>
+    </persistence-unit>
+</persistence>
