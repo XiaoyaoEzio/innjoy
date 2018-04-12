@@ -2,7 +2,9 @@ package me.innjoy.pms;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
+@ComponentScan("me.innjoy.pms.*")
 @SpringBootApplication
 public class InnjoypmsApplication {
 

@@ -1,8 +1,8 @@
 package me.innjoy.pms.test;
 
 import com.alibaba.fastjson.JSON;
-import me.innjoy.pms.params.RoomParam;
-import me.innjoy.pms.params.UpdateRoomListParam;
+import me.innjoy.pms.pojo.params.RoomParam;
+import me.innjoy.pms.pojo.params.UpdateRoomListParam;
 import org.junit.Test;
 
 import java.util.ArrayList;

@@ -1,8 +1,12 @@
 package me.innjoy.pms.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.meituan.hotel.lock.client.common.BaseParam;
+import com.meituan.hotel.lock.client.exception.APIException;
+import com.meituan.hotel.lock.client.results.APIResult;
 import com.meituan.hotel.lock.client.utils.AuthUtils;
+import me.innjoy.pms.pojo.dto.ResultDto;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -14,23 +18,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  *
  */
 @Component
-@Deprecated
-public class PostUtils {
+public class HttpUtils {
     private static String baseUrl;
     private static String appId;
     private static String appSecret;
 
-    public static Map<String, String> executePost(String url, BaseParam param) throws IOException {
+    private static final CloseableHttpClient httpClient = HttpClients.createDefault();
+
+    public static <T> ResultDto sendRequest(String uri, BaseParam param, Class<T> resultClass) throws APIException {
         // 生成请求
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(baseUrl + url);
+        HttpPost httpPost = new HttpPost(baseUrl + uri);
 
         // 设置请求体
         param.setTimestamp(System.currentTimeMillis());
@@ -46,29 +49,51 @@ public class PostUtils {
         httpPost.setHeader("Content-type", "application/json; charset=utf-8");
 
         // 发送请求
-        CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+        CloseableHttpResponse httpResponse = null;
+        try {
+            httpResponse = httpClient.execute(httpPost);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assert httpResponse != null;
         Integer code = httpResponse.getStatusLine().getStatusCode();
         HttpEntity responseEntity = httpResponse.getEntity();
-        String respJson = EntityUtils.toString(responseEntity);
+        String respJson = null;
+        try {
+            respJson = EntityUtils.toString(responseEntity);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        Map<String, String> map = new HashMap<>();
-        map.put("code", code.toString());
-        map.put("response", respJson);
-        return map;
+        JSONObject res = JSONObject.parseObject(respJson);
+        APIResult<T> result = new APIResult<>();
+        result.setStatus(res.getIntValue("status"));
+        result.setMessage(res.getString("message"));
+        result.setData(res.getObject("data", resultClass));
+
+        if (result.getStatus() == 0) {
+            return ResultDto.success();
+        } else {
+            System.out.println(result.getStatus());
+            System.out.println(result.getMessage());
+            return ResultDto.failure("服务器错误");
+        }
+
     }
 
     @Value("${meituan.baseurl}")
     public void setBaseUrl(String baseUrl) {
-        PostUtils.baseUrl = baseUrl;
+        HttpUtils.baseUrl = baseUrl;
     }
 
     @Value("${meituan.appid}")
     public void setAppId(String appId) {
-        PostUtils.appId = appId;
+        HttpUtils.appId = appId;
     }
 
     @Value("${meituan.appsecret}")
     public void setAppSecret(String appSecret) {
-        PostUtils.appSecret = appSecret;
+        HttpUtils.appSecret = appSecret;
     }
 }

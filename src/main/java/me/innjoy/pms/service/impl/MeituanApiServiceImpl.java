@@ -2,9 +2,9 @@ package me.innjoy.pms.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.meituan.hotel.lock.client.params.*;
-import me.innjoy.pms.params.QueryOpenDoorLogParam;
-import me.innjoy.pms.params.RoomParam;
-import me.innjoy.pms.params.UpdateRoomListParam;
+import me.innjoy.pms.pojo.params.QueryOpenDoorLogParam;
+import me.innjoy.pms.pojo.params.RoomParam;
+import me.innjoy.pms.pojo.params.UpdateRoomListParam;
 import me.innjoy.pms.service.MeituanApiService;
 import me.innjoy.pms.utils.PostUtils;
 import org.slf4j.Logger;

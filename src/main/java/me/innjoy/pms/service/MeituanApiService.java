@@ -11,11 +11,15 @@ public interface MeituanApiService {
 
     String openDoor() throws IOException;
 
+    /**
+     * 启用客户密码
+     */
     void enableCustomerPassword() throws IOException;
 
     Map<String, String> disableCustomerPassword() throws IOException;
 
     void queryCustomerPassword() throws IOException;
+
 
     void setManagerPassword() throws IOException;
 
