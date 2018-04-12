@@ -1,6 +1,7 @@
 package me.innjoy.pms.service.impl;
 
 import com.meituan.hotel.lock.client.params.BaseQueryParam;
+import com.meituan.hotel.lock.client.results.APIResult;
 import com.meituan.hotel.lock.client.results.OpenDoorResult;
 import me.innjoy.pms.consts.MeituanUriConsts;
 import me.innjoy.pms.pojo.dto.ResultDto;
@@ -15,7 +16,8 @@ import org.springframework.stereotype.Service;
 public class LockServiceImpl implements LockService {
     @Override
     public ResultDto openDoor(BaseQueryParam param) {
-        return HttpUtils.sendRequest(MeituanUriConsts.OPEN_DOOR, param,
+        APIResult<OpenDoorResult> apiResult = HttpUtils.sendRequest(MeituanUriConsts.OPEN_DOOR, param,
                 OpenDoorResult.class);
+        return HttpUtils.reverse(apiResult);
     }
 }

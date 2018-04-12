@@ -2,6 +2,7 @@ package me.innjoy.pms.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.meituan.hotel.lock.client.common.APIResultCode;
 import com.meituan.hotel.lock.client.common.BaseParam;
 import com.meituan.hotel.lock.client.exception.APIException;
 import com.meituan.hotel.lock.client.results.APIResult;
@@ -31,7 +32,7 @@ public class HttpUtils {
 
     private static final CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    public static <T> ResultDto sendRequest(String uri, BaseParam param, Class<T> resultClass) throws APIException {
+    public static <T> APIResult<T> sendRequest(String uri, BaseParam param, Class<T> resultClass) throws APIException {
         // 生成请求
         HttpPost httpPost = new HttpPost(baseUrl + uri);
 
@@ -72,14 +73,24 @@ public class HttpUtils {
         result.setMessage(res.getString("message"));
         result.setData(res.getObject("data", resultClass));
 
-        if (result.getStatus() == 0) {
-            return ResultDto.success();
-        } else {
-            System.out.println(result.getStatus());
-            System.out.println(result.getMessage());
-            return ResultDto.failure("服务器错误");
+        try {
+            httpResponse.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
+        return result;
+    }
+
+    /**
+     * 将 APIResult 转换为 ResultDto
+     */
+    public static <T> ResultDto reverse(APIResult<T> apiResult) {
+        if (apiResult.getStatus() == APIResultCode.SUCCESS.getCode()) {
+            return ResultDto.success(apiResult.getData());
+        } else {
+            return ResultDto.failure(apiResult.getMessage());
+        }
     }
 
     @Value("${meituan.baseurl}")
