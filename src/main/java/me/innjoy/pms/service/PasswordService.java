@@ -1,6 +1,7 @@
 package me.innjoy.pms.service;
 
 import com.meituan.hotel.lock.client.params.BaseQueryParam;
+import com.meituan.hotel.lock.client.params.CustomerPasswordParam;
 import com.meituan.hotel.lock.client.params.EnableCustomerPasswordParam;
 import me.innjoy.pms.pojo.dto.ResultDto;
 
@@ -24,4 +25,9 @@ public interface PasswordService {
     ResultDto queryTemporaryPassword(BaseQueryParam param);
 
 
+    ResultDto disableCustomerPassword(CustomerPasswordParam param);
+
+    ResultDto sendManagerPassword(BaseQueryParam param);
+
+    ResultDto queryManagerPassword(BaseQueryParam param);
 }
