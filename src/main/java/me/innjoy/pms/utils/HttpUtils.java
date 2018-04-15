@@ -58,7 +58,6 @@ public class HttpUtils {
         }
 
         assert httpResponse != null;
-        Integer code = httpResponse.getStatusLine().getStatusCode();
         HttpEntity responseEntity = httpResponse.getEntity();
         String respJson = null;
         try {
@@ -68,9 +67,13 @@ public class HttpUtils {
         }
 
         JSONObject res = JSONObject.parseObject(respJson);
+        System.out.println(respJson);
         APIResult<T> result = new APIResult<>();
         result.setStatus(res.getIntValue("status"));
         result.setMessage(res.getString("message"));
+
+        System.out.println(res.getObject("data", resultClass));
+
         result.setData(res.getObject("data", resultClass));
 
         try {

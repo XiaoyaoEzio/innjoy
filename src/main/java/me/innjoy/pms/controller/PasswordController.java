@@ -3,6 +3,7 @@ package me.innjoy.pms.controller;
 import com.meituan.hotel.lock.client.params.BaseQueryParam;
 import com.meituan.hotel.lock.client.params.CustomerPasswordParam;
 import com.meituan.hotel.lock.client.params.EnableCustomerPasswordParam;
+import com.meituan.hotel.lock.client.params.SendManagerPasswordParam;
 import me.innjoy.pms.pojo.dto.ResultDto;
 import me.innjoy.pms.service.MeituanApiService;
 import me.innjoy.pms.service.PasswordService;
@@ -10,6 +11,8 @@ import me.innjoy.pms.utils.ParamUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  *
@@ -36,6 +39,18 @@ public class PasswordController {
         if (verifyResult.getCode() == 1) {
             return verifyResult;
         }*/
+        // todo 测试数据
+        param.setContactName("特朗普");
+        param.setContactMobile("13200009999");
+        param.setChannelOrderNo("123345");
+        param.setCheckInTime(System.currentTimeMillis());
+
+        // 日期加一天
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        param.setCheckOutTime(c.getTimeInMillis());
+
         return passwordService.enableCustomerPassword(param);
     }
 
@@ -61,14 +76,48 @@ public class PasswordController {
         if (verifyResult.getCode() == 1) {
             return verifyResult;
         }*/
+        // todo 测试数据
+        param.setChannelOrderNo("123345");
+        param.setCheckInTime(System.currentTimeMillis());
+
+        // 日期加一天
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        param.setCheckOutTime(c.getTimeInMillis());
+
+
         return passwordService.disableCustomerPassword(param);
+    }
+
+    /**
+     * 延住客人密码
+     */
+    @PutMapping("/customer")
+    public ResultDto extendCustomerPassword(CustomerPasswordParam param) throws IOException {
+        // todo 测试
+        /*ResultDto verifyResult = ParamUtils.verifyNull(param);
+        if (verifyResult.getCode() == 1) {
+            return verifyResult;
+        }*/
+
+        // todo 测试数据
+        param.setChannelOrderNo("123345");
+        //param.setCheckInTime(System.currentTimeMillis());
+        // 日期加一天
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date(param.getCheckInTime() * 1000L));
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        param.setCheckOutTime(c.getTimeInMillis());
+
+        return passwordService.extendCustomerPassword(param);
     }
 
     /**
      * 设置管家密码
      */
     @PostMapping("/manager")
-    public ResultDto sendManagerPassword(BaseQueryParam param) throws IOException {
+    public ResultDto sendManagerPassword(SendManagerPasswordParam param) throws IOException {
         ResultDto verifyResult = ParamUtils.verifyNull(param);
         if (verifyResult.getCode() == 1) {
             return verifyResult;

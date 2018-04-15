@@ -4,8 +4,12 @@ import com.meituan.hotel.lock.client.common.BaseParam;
 import com.meituan.hotel.lock.client.params.BaseQueryParam;
 import com.meituan.hotel.lock.client.params.CustomerPasswordParam;
 import com.meituan.hotel.lock.client.params.EnableCustomerPasswordParam;
+import com.meituan.hotel.lock.client.params.SendManagerPasswordParam;
 import me.innjoy.pms.pojo.dto.ResultDto;
+import me.innjoy.pms.pojo.params.QueryLockStatusListParam;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 /**
  *
@@ -20,8 +24,16 @@ public class ParamUtils {
             return verifyCpp((CustomerPasswordParam) param);
         }
 
+        if (param instanceof SendManagerPasswordParam) {
+            return verifySmpp((SendManagerPasswordParam) param);
+        }
+
         if (param instanceof BaseQueryParam) {
             return verifyBqp((BaseQueryParam) param);
+        }
+
+        if (param instanceof QueryLockStatusListParam) {
+            return verifyQlslp((QueryLockStatusListParam) param);
         }
 
         return ResultDto.failure("不支持判断");
@@ -58,5 +70,26 @@ public class ParamUtils {
             return ResultDto.failure("roomId 为空");
         }
         return ResultDto.success();
+    }
+
+    private static ResultDto verifyQlslp(QueryLockStatusListParam param) {
+        if (StringUtils.isBlank(param.getHotelId())) {
+            return ResultDto.failure("hotelId 为空");
+        }
+        List<String> list = param.getRoomId();
+        if (list == null || list.size() == 0) {
+            return ResultDto.failure("roomId 为空");
+        }
+        return ResultDto.success();
+    }
+
+    private static ResultDto verifySmpp(SendManagerPasswordParam param) {
+        if (StringUtils.isBlank(param.getManagerPassword())) {
+            return ResultDto.failure("managerPassword 为空");
+        }
+        if (param.getValidTime() == null || param.getValidTime() <= 0) {
+            param.setValidTime(5L);
+        }
+        return verifyBqp(param);
     }
 }
